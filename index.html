@@ -1,0 +1,143 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>學 xué learn 習 xí practice</title>
+  <script src="content.js"></script>
+  <script src="logview.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #111;
+      color: #efefef;
+    }
+    #viewer {
+      font-family: Arial, sans-serif;
+      font-size: 100pt;
+      margin: 2rem;
+      color: #ffffff;
+      z-index: -100;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+    }
+	#wordView {
+		font-size: 20pt;
+	}
+    a {
+    	color: pink;
+    	text-decoration: none;
+ 			font-weight: normal;
+    }
+    a:hover {
+    	color: yellow;
+    	text-decoration: none;
+ 			font-weight: normal;
+    }
+    h2 {
+      margin-top: 2rem;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.3rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.6rem;
+      text-align: center;
+    }
+    th {
+      background: #f0f0f0;
+    }
+  a#toggleWordView {
+	  background: #130f0f;
+	  color:aliceblue
+     
+      border: 1px solid #888;
+      border-radius: 4px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+   a#toggleWordView:hover {
+       background: #cdcccc;
+
+		color: #000;
+    }
+  </style>
+</head>
+<body>
+	<a name="toggleWordView" id="toggleWordView">bump</a><br></br>
+	<div id="wordView"></div>
+	<div id="viewer"></div>
+	<div id="c"></div>
+
+  <script>
+  
+
+  var div=document.querySelector("#c");
+  var viewer=document.querySelector("#viewer");
+	var show=LogView(viewer);
+	div.innerHTML=enrich(content);
+	
+	var wordView=wordview(document.querySelector("#wordView"));
+	
+	var button =document.querySelector("#toggleWordView");
+	button.addEventListener("click",()=>wordView.next());
+	
+	wordView.toggle();
+	
+	
+	function wordview(elem) {
+		//elem=elem||document.createElement("div");
+		elem.style.display="none"
+		
+		function getRandomLine() {
+			var lines=div.innerHTML.split("\n").filter(line=>line.length>5);
+			return lines.length
+				? lines[Math.random()*lines.length|0]
+				: "empty";	
+		}
+		
+		
+		
+		var view={
+			elem: elem,
+			next() {
+				this.elem.innerHTML=getRandomLine();
+			},
+			toggle(){
+				if (this.elem.style.display=="none") {
+					this.next();
+					this.elem.style.display="inline";
+				} else {
+					this.elem.style.display="none";	
+				}	
+			}
+			 			
+		}
+		return view;
+	
+	}
+
+	  
+  function enrich(text) {  
+			var re=new RegExp('[\u4e00-\u9fff]','g')  
+			return content
+				.replaceAll(re,(glyph)=>`<a href="javascript:playsound('${glyph}')">${glyph}</a>`)
+				.replaceAll(/\n/g, "<br>\n")
+  }
+
+    function playsound(name) {
+    	show(name);
+      const audio = new Audio(encodeURIComponent(name) + ".mp3");
+      audio.play();
+    }
+  </script>
+
+</body>
+</html>
